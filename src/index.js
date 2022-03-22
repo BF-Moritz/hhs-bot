@@ -29,8 +29,8 @@ client.once('ready', async () => {
             try {
                 const countDown = await CountDown.makeCountDown(channel, lesson)
                 do {
-                    await sleep(100)
-                } while (countDown.check())
+                    await sleep(1000)
+                } while (await countDown.check())
             } catch (e) {
                 console.error(e)
             }

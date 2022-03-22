@@ -1,11 +1,12 @@
 import { Embed } from "@discordjs/builders"
+import { Message } from "discord.js";
 
 export class CountDown {
     /**
      * 
      * @param {*} embed 
      * @param {*} lesson 
-     * @param {*} message 
+     * @param {Message} message 
      */
     constructor(embed, lesson, message) {
         this.embed = embed;
@@ -43,7 +44,6 @@ export class CountDown {
             await this.message.delete()
             return false
         }
-
         const msg = makeTime(this.lesson.timeStampEnd)
         if (this.embed.fields[0].value !== msg) {
             this.embed.fields[0].value = msg
@@ -69,7 +69,7 @@ function makeTime(time) {
 
     parts.push(`${Math.ceil(m)} Minute${Math.ceil(m) === 1 ? "n" : ""}`)
 
-    if (h <= 0 && m > 0 && m < 1) {
+    if (h <= 0 && m > 0 && m < 0.5) {
         return `fast geschaff!`
     }
     return `noch ${parts.join(" und ")}`

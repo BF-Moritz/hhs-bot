@@ -1,21 +1,21 @@
 {
-  "name": "hhs-bot",
-  "version": "1.0.0",
-  "description": "https://discord.com/api/oauth2/authorize?client_id=955400014157451305&permissions=124928&scope=bot",
-  "main": "src/index.js",
-  "type": "module",
-  "scripts": {
-    "start": "node src/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "@discordjs/rest": "^0.3.0",
-    "discord-api-types": "^0.29.0",
-    "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0",
-    "webuntis": "^1.18.0"
-  }
+	"name": "hhs-bot",
+	"version": "1.0.0",
+	"description": "a bot to make a countdoen for each lesson",
+	"main": "src/index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node src/index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@discordjs/builders": "^0.12.0",
+		"@discordjs/rest": "^0.3.0",
+		"discord-api-types": "^0.29.0",
+		"discord.js": "^13.6.0",
+		"dotenv": "^16.0.0",
+		"webuntis": "^1.18.0"
+	}
 }
