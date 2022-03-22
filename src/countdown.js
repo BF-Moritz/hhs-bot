@@ -45,7 +45,7 @@ function makeTime(time) {
         parts.push(`${h} Stunde${h > 1 ? "n" : ""}`)
     }
 
-    parts.push(`${Math.ceil(m)} Minute${Math.ceil(m) === 1 ? "n" : ""}`)
+    parts.push(`${Math.ceil(m)} Minute${Math.ceil(m) === 1 ? "" : "n"}`)
 
     if (h <= 0 && m > 0 && m < 0.5) {
         return `fast geschaff!`
