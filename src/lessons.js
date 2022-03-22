@@ -3,7 +3,7 @@ import WebUntis from "webuntis"
 
 export async function updateLessons() {
     console.log("getting new lessons for", new Date(Date.now()).toLocaleDateString("de"))
-    const untis = new WebUntis("HH-Schule-Karlsruhe", process.env.UNTIS_USERNAME, process.env.UNTIS_PASSWORD, "erato.webuntis.com")
+    const untis = new WebUntis(process.env.UNTIS_SCHOOL, process.env.UNTIS_USERNAME, process.env.UNTIS_PASSWORD, process.env.UNTIS_URL)
     const lessons = []
     try {
         await untis.login()

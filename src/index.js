@@ -6,8 +6,8 @@ import { sleep } from "./sleep.js";
 
 config()
 
-const guildID = "619268882623889443"
-const channelID = "892457633603264532"
+const guildID = process.env.GUILD_ID
+const channelID = process.env.CHANNEL_ID
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
