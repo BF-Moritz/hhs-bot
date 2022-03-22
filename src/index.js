@@ -16,26 +16,25 @@ client.once('ready', async () => {
     const guild = client.guilds.cache.get(guildID)
     const channel = guild.channels.cache.get(channelID)
     let date = new Date(Date.now()).toLocaleDateString("de");
+    let message = await channel.send({ embeds: [], content: `Stunden am ${date}` })
+    let countDown = new CountDown(message, lessons, date)
 
     while (true) {
         const currentDate = new Date(Date.now()).toLocaleDateString("de");
         if (currentDate !== date) {
             lessons = await updateLessons()
-            date = currentDate;
-        }
-
-        const [lesson] = lessons.filter(v => v.timeStampStart < Date.now() && v.timeStampEnd > Date.now())
-        if (lesson) {
             try {
-                const countDown = await CountDown.makeCountDown(channel, lesson)
-                do {
-                    await sleep(1000)
-                } while (await countDown.check())
+                await message.delete()
             } catch (e) {
                 console.error(e)
             }
+            date = currentDate;
+            message = await channel.send({ embeds: [], content: `Stunden am ${date}` })
+            countDown = new CountDown(message, lessons, date)
         }
-        await sleep(1000 * 10)
+
+        countDown.update()
+        await sleep(1000 * 5)
     }
 });
 

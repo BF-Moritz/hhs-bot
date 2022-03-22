@@ -2,54 +2,32 @@ import { Embed } from "@discordjs/builders"
 import { Message } from "discord.js";
 
 export class CountDown {
-    /**
-     * 
-     * @param {*} embed 
-     * @param {*} lesson 
-     * @param {Message} message 
-     */
-    constructor(embed, lesson, message) {
-        this.embed = embed;
-        this.lesson = lesson
+    constructor(message, lessons, date) {
+        this.lessons = lessons
         this.message = message
+        this.date = date
     }
 
-    /**
-     * 
-     * @param {import("discord.js").GuildBasedChannel} channel 
-     * @param {Object} lesson 
-     * @returns CountDown
-     */
-    static async makeCountDown(channel, lesson) {
-        console.log("creating a new countdown for", lesson.subjects.join(", "))
-        let msg = makeTime(lesson.timeStampEnd)
-        const embed = new Embed({
-            title: lesson.subjects.join(", "),
-            description: `${lesson.rooms.join(", ")} - ${lesson.teachers.join(", ")}`,
-            fields: [
-                { name: "Timer", value: msg }
-            ]
+    async update() {
+        const embeds = []
+        const currentLessons = this.lessons.filter(v => v.timeStampStart <= Date.now() && v.timeStampEnd >= Date.now())
+        for (const lesson of currentLessons) {
+            let msg = makeTime(lesson.timeStampEnd)
+            const embed = new Embed({
+                title: `Gruppe ${lesson.group}: ${lesson.subjects.join(", ")}`,
+                description: `${lesson.rooms.join(", ")} - ${lesson.teachers.join(", ")}`,
+                fields: [
+                    { name: "Timer", value: msg }
+                ]
+            })
+            embeds.push(embed)
+        }
+        embeds.sort((a, b) => {
+            if (a.title < b.title) { return -1; }
+            if (a.title > b.title) { return 1; }
+            return 0;
         })
-        let message
-        try {
-            message = await channel.send({ embeds: [embed] })
-        } catch (e) {
-            console.error(e)
-        }
-        return new CountDown(embed, lesson, message)
-    }
-
-    async check() {
-        if (Date.now() > this.lesson.timeStampEnd) {
-            await this.message.delete()
-            return false
-        }
-        const msg = makeTime(this.lesson.timeStampEnd)
-        if (this.embed.fields[0].value !== msg) {
-            this.embed.fields[0].value = msg
-            await this.message.edit({ embeds: [this.embed] })
-        }
-        return true
+        await this.message.edit({ embeds, content: `Stunden am ${this.date}` })
     }
 }
 

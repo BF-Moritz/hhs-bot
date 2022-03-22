@@ -33,7 +33,8 @@ export async function updateLessons() {
                     ),
                     teachers: entry.te.map(v => v.longname),
                     rooms: entry.ro.map(v => v.longname),
-                    subjects: entry.su.map(v => v.longname)
+                    subjects: entry.su.map(v => v.longname),
+                    group: entry.lstext === "B" ? "B" : "A"
                 })
             }
         }
