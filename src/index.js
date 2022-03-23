@@ -16,20 +16,25 @@ client.once('ready', async () => {
 	const guild = client.guilds.cache.get(guildID);
 	const channel = guild.channels.cache.get(channelID);
 
-	if (channel.isText()) {
-		const messages = await channel.messages.fetch();
-		const messagePromises = [];
-		for (const message of messages.values()) {
-			messagePromises.push(message.delete());
-		}
-		await Promise.all(messagePromises);
+	if (!channel.isText()) {
+		console.log('channel is no text channel!');
+		return;
 	}
+
+	// channel aufräumen
+	const messages = await channel.messages.fetch();
+	const messagePromises = [];
+	for (const message of messages.values()) {
+		messagePromises.push(message.delete());
+	}
+	await Promise.all(messagePromises);
 
 	let date = new Date(Date.now()).toLocaleDateString('de');
 	let message = await channel.send({
 		embeds: [],
 		content: `Stunden am ${date}`
 	});
+
 	let countDown = new CountDown(message, lessons, date);
 
 	while (true) {

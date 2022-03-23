@@ -33,7 +33,39 @@ export class CountDown {
 			}
 			return 0;
 		});
-		await this.message.edit({ embeds, content: `Stunden am ${this.date}` });
+
+		let changes = this.message.embeds.length !== embeds.length;
+		if (!changes) {
+			for (let i = 0; i < embeds.length; i++) {
+				if (embeds[i].title !== this.message.embeds[i].title) {
+					changes = true;
+					break;
+				}
+
+				if (
+					embeds[i].description !== this.message.embeds[i].description
+				) {
+					changes = true;
+					break;
+				}
+
+				if (
+					embeds[i].fields[0].value !==
+					this.message.embeds[i].fields[0].value
+				) {
+					changes = true;
+					break;
+				}
+			}
+		}
+
+		if (changes) {
+			await this.message.edit({
+				embeds,
+				content: `Stunden am ${this.date}`
+			});
+			await this.message.fetch();
+		}
 	}
 }
 
