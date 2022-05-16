@@ -1,6 +1,12 @@
 import { Embed } from '@discordjs/builders';
 
 export class CountDown {
+	/**
+	 *
+	 * @param {*} message
+	 * @param {object[]} lessons
+	 * @param {*} date
+	 */
 	constructor(message, lessons, date) {
 		this.lessons = lessons;
 		this.message = message;
@@ -9,30 +15,64 @@ export class CountDown {
 
 	async update() {
 		const embeds = [];
-		const currentLessons = this.lessons.filter(
-			(v) =>
-				v.timeStampStart <= Date.now() && v.timeStampEnd >= Date.now()
-		);
-		for (const lesson of currentLessons) {
-			let msg = makeTime(lesson.timeStampEnd);
-			const embed = new Embed({
-				title: `Gruppe ${lesson.group}: ${lesson.subjects.join(', ')}`,
-				description: `${lesson.rooms.join(
-					', '
-				)} - ${lesson.teachers.join(', ')}`,
-				fields: [{ name: 'Timer', value: msg }]
-			});
-			embeds.push(embed);
-		}
-		embeds.sort((a, b) => {
-			if (a.title < b.title) {
-				return -1;
-			}
-			if (a.title > b.title) {
-				return 1;
-			}
-			return 0;
+		const index = this.lessons.findIndex((v) => {
+			return v.timeStampStart <= Date.now() && v.timeStampEnd >= Date.now();
 		});
+		let nextIndex = index;
+		if (index !== -1) {
+			const currentLessons = this.lessons[index];
+			for (const lesson of currentLessons.lessons) {
+				let msg = makeTime(lesson.timeStampEnd);
+				const embed = new Embed({
+					title:
+						lesson.group === null
+							? lesson.subjects.join(', ')
+							: `Gruppe ${lesson.group}: ${lesson.subjects.join(', ')}`,
+					description: `${lesson.rooms.join(', ')} - ${lesson.teachers.join(', ')}`,
+					fields: [
+						{ name: 'Timer', value: msg },
+						{ name: 'Vertretungstext', value: lesson.text || '-' }
+					]
+				});
+
+				embeds.push(embed);
+			}
+			embeds.sort((a, b) => {
+				if (a.title < b.title) {
+					return -1;
+				}
+				if (a.title > b.title) {
+					return 1;
+				}
+				return 0;
+			});
+			nextIndex = index + 1;
+		} else {
+			nextIndex = this.lessons.findIndex((v) => {
+				return v.timeStampStart > Date.now();
+			});
+		}
+
+		embeds.push(
+			new Embed({
+				title: `Nächste Stunde(n): ${this.lessons[nextIndex].lessons
+					.map((v) => (v.group === null ? '' : `${v.group}: `) + v.subjects.join(', '))
+					.join(', ')}`,
+				description: `Start: ${this.lessons[nextIndex].timeStampStart.getHours()}:${this.lessons[
+					nextIndex
+				].timeStampStart.getMinutes()}`,
+				fields: [
+					{
+						name: 'Räume',
+						value: this.lessons[nextIndex].lessons.map((v) => v.rooms.join(', ')).join(', ')
+					},
+					{
+						name: 'Lehrer',
+						value: this.lessons[nextIndex].lessons.map((v) => v.teachers.join(', ')).join(', ')
+					}
+				]
+			})
+		);
 
 		let changes = this.message.embeds.length !== embeds.length;
 		if (!changes) {
@@ -42,17 +82,17 @@ export class CountDown {
 					break;
 				}
 
-				if (
-					embeds[i].description !== this.message.embeds[i].description
-				) {
+				if (embeds[i].description !== this.message.embeds[i].description) {
 					changes = true;
 					break;
 				}
 
-				if (
-					embeds[i].fields[0].value !==
-					this.message.embeds[i].fields[0].value
-				) {
+				if (embeds[i].fields[0].value !== this.message.embeds[i].fields[0].value) {
+					changes = true;
+					break;
+				}
+
+				if (embeds[i].fields[1].value !== this.message.embeds[i].fields[1].value) {
 					changes = true;
 					break;
 				}
