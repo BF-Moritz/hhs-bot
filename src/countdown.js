@@ -46,33 +46,35 @@ export class CountDown {
 				}
 				return 0;
 			});
-			nextIndex = index + 1;
+			nextIndex = index + 1 < this.lessons.length ? index + 1 : -1;
 		} else {
 			nextIndex = this.lessons.findIndex((v) => {
 				return v.timeStampStart > Date.now();
 			});
 		}
 
-		embeds.push(
-			new Embed({
-				title: `Nächste Stunde(n): ${this.lessons[nextIndex].lessons
-					.map((v) => (v.group === null ? '' : `${v.group}: `) + v.subjects.join(', '))
-					.join(', ')}`,
-				description: `Start: ${this.lessons[nextIndex].timeStampStart.getHours()}:${this.lessons[
-					nextIndex
-				].timeStampStart.getMinutes()}`,
-				fields: [
-					{
-						name: 'Räume',
-						value: this.lessons[nextIndex].lessons.map((v) => v.rooms.join(', ')).join(', ')
-					},
-					{
-						name: 'Lehrer',
-						value: this.lessons[nextIndex].lessons.map((v) => v.teachers.join(', ')).join(', ')
-					}
-				]
-			})
-		);
+		if (nextIndex >= 0) {
+			embeds.push(
+				new Embed({
+					title: `Nächste Stunde(n): ${this.lessons[nextIndex].lessons
+						.map((v) => (v.group === null ? '' : `${v.group}: `) + v.subjects.join(', '))
+						.join(', ')}`,
+					description: `Start: ${this.lessons[nextIndex].timeStampStart.getHours()}:${this.lessons[
+						nextIndex
+					].timeStampStart.getMinutes()}`,
+					fields: [
+						{
+							name: 'Räume',
+							value: this.lessons[nextIndex].lessons.map((v) => v.rooms.join(', ')).join(', ')
+						},
+						{
+							name: 'Lehrer',
+							value: this.lessons[nextIndex].lessons.map((v) => v.teachers.join(', ')).join(', ')
+						}
+					]
+				})
+			);
+		}
 
 		let changes = this.message.embeds.length !== embeds.length;
 		if (!changes) {
