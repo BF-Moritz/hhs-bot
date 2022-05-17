@@ -54,6 +54,8 @@ export class CountDown {
 		}
 
 		if (nextIndex >= 0) {
+			const lessons = this.lessons[nextIndex].lessons.map((v) => v.rooms.join(', ')).join(', ');
+			const teachers = this.lessons[nextIndex].lessons.map((v) => v.teachers.join(', ')).join(', ');
 			embeds.push(
 				new Embed({
 					title: `Nächste Stunde(n): ${this.lessons[nextIndex].lessons
@@ -65,11 +67,11 @@ export class CountDown {
 					fields: [
 						{
 							name: 'Räume',
-							value: this.lessons[nextIndex].lessons.map((v) => v.rooms.join(', ')).join(', ')
+							value: lessons.length > 0 ? lessons : '-'
 						},
 						{
 							name: 'Lehrer',
-							value: this.lessons[nextIndex].lessons.map((v) => v.teachers.join(', ')).join(', ')
+							value: teachers.length > 0 ? teachers : '-'
 						}
 					]
 				})
