@@ -22,7 +22,7 @@ export class CountDown {
 		if (index !== -1) {
 			const currentLessons = this.lessons[index];
 			for (const lesson of currentLessons.lessons) {
-				let msg = makeTime(lesson.timeStampEnd);
+				let msg = makeTime(lesson.timeStampEnd, lesson.teachers.includes('Eifler'));
 				const embed = new Embed({
 					title:
 						lesson.group === null
@@ -118,7 +118,7 @@ export class CountDown {
  * @param {Date} time
  * @returns
  */
-function makeTime(time) {
+function makeTime(time, infinite) {
 	const diff = time - Date.now();
 	const parts = [];
 	const h = Math.floor(diff / (1000 * 60 * 60));
@@ -131,6 +131,9 @@ function makeTime(time) {
 
 	if (h <= 0 && m > 0 && m < 0.5) {
 		return `fast geschaff!`;
+	}
+	if (infinite) {
+		return `noch ∞ Stunden (${parts.join(' und ')})`;
 	}
 	return `noch ${parts.join(' und ')}`;
 }
